@@ -1,0 +1,9 @@
+images.png
+size:4096,1024
+repeat:none
+background
+bounds:0,0,1024,1024
+char
+bounds:1024,0,1024,1024
+laserBlue08
+bounds:2048,978,48,46
