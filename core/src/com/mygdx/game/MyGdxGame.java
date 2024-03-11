@@ -5,11 +5,16 @@ import com.badlogic.gdx.Game;
 public class MyGdxGame extends Game {
 	// Since you are extending Game, you no longer need the SpriteBatch and Texture for this class.
 	// They will be used in the individual screens.
+	BattleScreen battleScreen;
 
 	@Override
 	public void create() {
 		// This will work because you're now extending Game, which contains the setScreen method.
-		setScreen(new MainMenuScreen(this));
+		//setScreen(new MainMenuScreen(this));
+		battleScreen = new BattleScreen();
+		setScreen(battleScreen);
+
+
 	}
 
 	@Override
