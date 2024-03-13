@@ -125,7 +125,7 @@ class BattleScreen implements Screen{
 
         leftLimit = -mainCharacter.boundingBox.x;
 
-            //change the down limit for the platform 
+            //change the down limit for the platform
         downLimit = - mainCharacter.boundingBox.y;
 
         rightLimit = WORLD_WIDTH - mainCharacter.boundingBox.x - mainCharacter.boundingBox.width;
@@ -134,10 +134,6 @@ class BattleScreen implements Screen{
         // keyboard input
 
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightLimit > 0) {
-
-            //float xChange = playerShip.movementSpeed * deltaTime;
-            //xChange = Math.min(xChange, rightLimit);
-            //playerShip.translate(xChange, 0f);
 
             mainCharacter.translate(Math.min(mainCharacter.movementSpeed * delta, rightLimit), 0f);
             //touch input (mouse)
