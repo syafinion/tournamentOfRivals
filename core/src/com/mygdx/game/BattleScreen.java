@@ -87,7 +87,7 @@ class BattleScreen implements Screen{
         enemy.update(delta);
 
         //temporary background
-        //renderBackground(delta);
+        //renderBackground();
 
         mainCharacter.draw(batch);
         enemy.draw(batch);
@@ -119,6 +119,8 @@ class BattleScreen implements Screen{
         }
     }
 
+
+    //mostly for movement
     public void detectInput(float delta) {
         //limits
         float leftLimit,rightLimit,upLimit, downLimit;
@@ -133,29 +135,31 @@ class BattleScreen implements Screen{
 
         // keyboard input
 
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightLimit > 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.D) && rightLimit > 0) {
 
             mainCharacter.translate(Math.min(mainCharacter.movementSpeed * delta, rightLimit), 0f);
             //touch input (mouse)
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) && upLimit > 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.W) && upLimit > 0) {
 
             mainCharacter.translate(0f, Math.min(mainCharacter.movementSpeed * delta, upLimit));
 
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && leftLimit < 0) {
+        if (Gdx.input.isKeyPressed(Input.Keys.A) && leftLimit < 0) {
 
             mainCharacter.translate(Math.max(-mainCharacter.movementSpeed * delta, leftLimit),0f);
 
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && downLimit < 0) {
+        //this is still moving downward, the ducking system maybe reduce the the height by 70% ish, need to test
+        if (Gdx.input.isKeyPressed(Input.Keys.S) && downLimit < 0) {
 
             mainCharacter.translate(0f, Math.max(-mainCharacter.movementSpeed * delta, downLimit));
 
         }
+        //maybe the shield mechanic if possible
 
         //mouse and touchpad input
 
@@ -163,7 +167,8 @@ class BattleScreen implements Screen{
     public void renderBullet(float delta) {
 
         // when i already understand the input from keyboard, change to if input then fire
-        if (mainCharacter.canFire()) {
+        // temporary input using the Q button
+        if (mainCharacter.canFire() && Gdx.input.isKeyPressed(Input.Keys.Q)) {
             Bullet bullet = mainCharacter.fireBullet();
             playerBulletLists.add(bullet);
         }
@@ -204,7 +209,7 @@ class BattleScreen implements Screen{
         batch.setProjectionMatrix(camera.combined);
     }
 
-    private void renderBackground(float delta){
+    private void renderBackground(){
         batch.draw(backgroundTextureRegion, 0, 0, WORLD_WIDTH, WORLD_HEIGHT);
         batch.setProjectionMatrix(camera.combined);
     }
