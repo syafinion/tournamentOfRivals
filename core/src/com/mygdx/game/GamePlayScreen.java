@@ -15,8 +15,9 @@ public class GamePlayScreen extends ScreenAdapter {
     OrthographicCamera camera;
     SpriteBatch batch;
     Character playerCharacter;
-    Character npcCharacter; // Add this if you want an NPC to interact with
+    Character npcCharacter;
     ShapeRenderer shapeRenderer;
+
     public GamePlayScreen(final Game game) {
         this.game = game;
         camera = new OrthographicCamera();
@@ -24,10 +25,10 @@ public class GamePlayScreen extends ScreenAdapter {
         camera.setToOrtho(false, 800, 480);
         batch = new SpriteBatch();
 
-        // Initialize your character and an NPC here, adjust the positions as needed
-        playerCharacter = new Character("firstguy-removebg.png", 100, 100, 64, 64);
-        npcCharacter = new Character("firstguy-removebg.png", 300, 100, 64, 64); // Make sure you have npc.png
-
+        // Use the correct path for the sprite sheet here for both player and NPC
+        String spriteSheetPath = "characterSprite.png";
+        playerCharacter = new Character(spriteSheetPath, 100, 100, 64, 64);
+        npcCharacter = new Character(spriteSheetPath, 300, 100, 64, 64);
     }
 
     private void update(float delta) {
@@ -58,6 +59,7 @@ public class GamePlayScreen extends ScreenAdapter {
         }
     }
 
+
     @Override
     public void render(float delta) {
         update(delta);
@@ -74,8 +76,8 @@ public class GamePlayScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
 
         batch.begin();
-        playerCharacter.draw(batch, delta); // Update this line
-        npcCharacter.draw(batch, delta); // And this line, if NPC has an animation
+        playerCharacter.draw(batch, delta);
+        npcCharacter.draw(batch, delta);
         batch.end();
     }
 
@@ -83,11 +85,9 @@ public class GamePlayScreen extends ScreenAdapter {
     public void hide() {
         batch.dispose();
         shapeRenderer.dispose();
-        playerCharacter.dispose(); // You should implement this method
-        npcCharacter.dispose(); // You should implement this method
+        playerCharacter.dispose();
+        npcCharacter.dispose();
     }
-
 
     // Implement other Screen methods as needed
 }
-
