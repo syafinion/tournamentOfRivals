@@ -11,8 +11,10 @@ public class Bullet {
     float movementSpeed;
 
     // position and dimension
-    float xPosition, yPosition;
-    float bulletWidth, bulletHeight;
+    //float xPosition, yPosition;
+    //float bulletWidth, bulletHeight;
+
+    Rectangle boundingBox;
 
     // graph
 
@@ -20,18 +22,19 @@ public class Bullet {
 
     public Bullet(float movementSpeed, float xPosition, float yPosition, float bulletWidth, float bulletHeight, TextureRegion bulletTextureRegion) {
         this.movementSpeed = movementSpeed;
-        this.xPosition = xPosition;
-        this.yPosition = yPosition;
-        this.bulletWidth = bulletWidth;
-        this.bulletHeight = bulletHeight;
+
+        // this.xPosition = xPosition;
+        //this.yPosition = yPosition;
+        //this.bulletWidth = bulletWidth;
+        //this.bulletHeight = bulletHeight;
+
         this.bulletTextureRegion = bulletTextureRegion;
+
+        this.boundingBox = new Rectangle(xPosition - bulletWidth/2, yPosition - bulletHeight/2, bulletWidth, bulletHeight);
+    }
+    void draw(Batch batch) {
+        batch.draw(bulletTextureRegion, boundingBox.x, boundingBox.y, boundingBox.width, boundingBox.height);
     }
 
-    void draw(Batch batch) {
-        batch.draw(bulletTextureRegion, xPosition, yPosition, bulletWidth, bulletHeight);
-    }
-    public Rectangle getBoundingBox(){
-        return new Rectangle(xPosition, yPosition, bulletWidth,bulletHeight);
-    }
 }
 

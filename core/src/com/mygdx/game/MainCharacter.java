@@ -10,7 +10,7 @@ class MainCharacter extends Character{
     public Bullet fireBullet(){
 
         Bullet bullet;
-        bullet = new Bullet(bulletMovementSpeed, xPosition + width,yPosition+height/2, bulletWidth, bulletHeight, bulletTextureRegion);
+        bullet = new Bullet(bulletMovementSpeed, boundingBox.x + boundingBox.width,boundingBox.y + boundingBox.height/2, bulletWidth, bulletHeight, bulletTextureRegion);
 
         timeSinceLastShot = 0;
 
