@@ -55,8 +55,11 @@ public class MainMenuScreen extends ScreenAdapter {
 
         playButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                System.out.println("Play button clicked. Changing screen.");
+                game.setScreen(new GamePlayScreen(game)); // Switch to gameplay screen
             }
         });
+
         settingsButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
             }
