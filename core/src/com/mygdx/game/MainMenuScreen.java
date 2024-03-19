@@ -15,18 +15,29 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class MainMenuScreen extends ScreenAdapter {
     private Stage stage;
     private Game game;
+
+    private Texture backgroundTexture;
+    private Image backgroundImage;
 
     public MainMenuScreen(Game game) {
         this.game = game;
     }
 
     public void show() {
-        this.stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(this.stage);
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+
+        // Load and set up the background image
+        backgroundTexture = new Texture("mainmenuimage.jpeg");
+        backgroundImage = new Image(backgroundTexture);
+        backgroundImage.setFillParent(true);
+        stage.addActor(backgroundImage); // Add background first
 
         // Create a new empty Skin
         Skin skin = new Skin();
@@ -95,5 +106,6 @@ public class MainMenuScreen extends ScreenAdapter {
 
     public void hide() {
         this.stage.dispose();
+        backgroundTexture.dispose();
     }
 }

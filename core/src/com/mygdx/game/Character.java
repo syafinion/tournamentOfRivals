@@ -47,6 +47,7 @@ public class Character {
         // The idle animation uses the first frame of the first row
         idleFrame = temp[0][0];
 
+
         // Extract the second row for the running animation
         TextureRegion[] runningFrames = new TextureRegion[FRAME_COLS];
         System.arraycopy(temp[1], 0, runningFrames, 0, FRAME_COLS);
