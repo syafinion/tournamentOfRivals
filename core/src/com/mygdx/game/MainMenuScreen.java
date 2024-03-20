@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 
+
+
 public class MainMenuScreen extends ScreenAdapter {
     private Stage stage;
     private Game game;
@@ -24,6 +26,9 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     public void show() {
+
+        //rendering the background
+
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(this.stage);
 
@@ -90,6 +95,9 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     public void hide() {
+
         this.stage.dispose();
     }
+
+
 }

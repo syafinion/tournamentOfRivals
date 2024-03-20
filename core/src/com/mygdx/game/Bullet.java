@@ -10,10 +10,6 @@ public class Bullet {
     // physical characteristic
     float movementSpeed;
 
-    // position and dimension
-    //float xPosition, yPosition;
-    //float bulletWidth, bulletHeight;
-
     Rectangle boundingBox;
 
     // graph
@@ -22,14 +18,7 @@ public class Bullet {
 
     public Bullet(float movementSpeed, float xPosition, float yPosition, float bulletWidth, float bulletHeight, TextureRegion bulletTextureRegion) {
         this.movementSpeed = movementSpeed;
-
-        // this.xPosition = xPosition;
-        //this.yPosition = yPosition;
-        //this.bulletWidth = bulletWidth;
-        //this.bulletHeight = bulletHeight;
-
         this.bulletTextureRegion = bulletTextureRegion;
-
         this.boundingBox = new Rectangle(xPosition - bulletWidth/2, yPosition - bulletHeight/2, bulletWidth, bulletHeight);
     }
     void draw(Batch batch) {

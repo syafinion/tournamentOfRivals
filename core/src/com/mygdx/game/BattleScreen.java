@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,6 +25,12 @@ class BattleScreen implements Screen{
     private SpriteBatch batch;
     private TextureAtlas textureAtlas;
 
+    //for coin animation use
+        //also use private SpriteBatch batch
+    private Texture texture;
+    private Animation<TextureRegion> animation;
+    private float elapsedTime= 0f;
+
     private TextureRegion mainCharacterTextureRegion, mainCharacterBulletTextureRegion, backgroundTextureRegion, enemyTextureRegion, enemyBulletTextureRegion;
 
     //world parameters
@@ -33,8 +41,8 @@ class BattleScreen implements Screen{
     private Character mainCharacter;
     private Character enemy;
 
-        //just add the enemy here
-    private Character lvl1_enemy;
+    private Coin coin1, coin2;
+    private LinkedList<Coin> coinLinkedList;
 
     private LinkedList<Bullet> playerBulletLists;
     private LinkedList<Bullet> enemyBulletLists;
@@ -43,6 +51,19 @@ class BattleScreen implements Screen{
         //setting the screen
         camera = new OrthographicCamera();
         viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+
+        //coin animation
+        batch = new SpriteBatch();
+        texture = new Texture("Coins.png");
+
+        int frameWidth = texture.getWidth() / 6;
+        int frameHeight = texture.getHeight();
+
+        float frameDuration = 0.1f;
+        TextureRegion[][] frames = TextureRegion.split(texture, frameWidth, frameHeight);
+        TextureRegion[] animationFrames = frames[0];
+        animation = new Animation<>(frameDuration, animationFrames);
+
 
         //setting the texture atlas, (using the texture atlas for more efficient memory i guess)
         textureAtlas = new TextureAtlas("images.atlas");
@@ -61,9 +82,16 @@ class BattleScreen implements Screen{
 
         //initializing the game objects
         //the character dimension is the same for the width and the height
-        mainCharacter = new MainCharacter(30, 100, WORLD_WIDTH/8, WORLD_HEIGHT/8, 15, 15, 3, 1,30,0.5f, mainCharacterBulletTextureRegion, mainCharacterTextureRegion);
-        enemy = new Enemy(2, 100, WORLD_WIDTH/1.5f, WORLD_HEIGHT/8, 15, 15, 5, 1,30,0.8f, enemyBulletTextureRegion, enemyTextureRegion);
+        mainCharacter = new MainCharacter(30, 100, WORLD_WIDTH/8, 7.5f, 15, 15, 3, 1,30,0.5f,0, mainCharacterBulletTextureRegion, mainCharacterTextureRegion);
+        enemy = new Enemy(30, 100, WORLD_WIDTH/1.5f, 7.5f, 15, 15, 5, 1,30,0.8f,0, enemyBulletTextureRegion, enemyTextureRegion);
 
+        //coin position ( add the coin and position on here)
+        coin1 = new Coin(200, 5, 10, 5, frameDuration, null, animationFrames);
+        coin2 = new Coin(100, 78, 10, 5, frameDuration, null, animationFrames);
+//        coin3 =();
+//        coin4 =();
+
+        coinLinkedList = new LinkedList<>();
         enemyBulletLists = new LinkedList<>();
         playerBulletLists = new LinkedList<>();
 
@@ -73,11 +101,13 @@ class BattleScreen implements Screen{
 
     @Override
     public void show() {
-
+        addCoin();
     }
 
     @Override
     public void render(float delta) {
+        elapsedTime += delta;
+        TextureRegion currentFrame = animation.getKeyFrame(elapsedTime, true);
         batch.begin();
 
         detectInput(delta);
@@ -86,6 +116,10 @@ class BattleScreen implements Screen{
         mainCharacter.update(delta);
         enemy.update(delta);
 
+        //render coin
+        coinCollision(delta);
+
+        System.out.println(mainCharacter.coinCounter);
         //temporary background
         //renderBackground();
 
@@ -98,6 +132,60 @@ class BattleScreen implements Screen{
 
         batch.end();
     }
+
+    public void renderBullet(float delta) {
+        // temporary input using the Q button
+        if (mainCharacter.canFire() && Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            Bullet bullet = mainCharacter.fireBullet();
+            playerBulletLists.add(bullet);
+        }
+
+
+        ListIterator<Bullet> iterator = playerBulletLists.listIterator();
+        while(iterator.hasNext()){
+            Bullet bullet = iterator.next();
+            bullet.draw(batch);
+            bullet.boundingBox.x += bullet.movementSpeed * delta;
+            if(bullet.boundingBox.x >= WORLD_WIDTH){
+                iterator.remove();
+            }
+        }
+
+        if (enemy.canFire()) {
+            Bullet bullet = enemy.fireBullet();
+            enemyBulletLists.add(bullet);
+        }
+
+        iterator = enemyBulletLists.listIterator();
+        while(iterator.hasNext()){
+            Bullet bullet = iterator.next();
+            bullet.draw(batch);
+            bullet.boundingBox.x -= bullet.movementSpeed * delta;
+            if(bullet.boundingBox.x < 0){
+                iterator.remove();
+            }
+        }
+    }
+
+    public void coinCollision(float delta){
+        ListIterator<Coin> iterator = coinLinkedList.listIterator();
+
+            while(iterator.hasNext()){
+                Coin coin = iterator.next();
+
+                if(mainCharacter.intersects(coin.boundingBox)){
+                    mainCharacter.coinCounter++;
+                    iterator.remove();
+                }
+                coin.render(batch);
+                coin.update(delta);
+            }
+        }
+    public void addCoin(){
+        coinLinkedList.add(coin1);
+        coinLinkedList.add(coin2);
+    }
+
 
     private void detectCollision(){
         ListIterator<Bullet> iterator = playerBulletLists.listIterator();
@@ -126,15 +214,11 @@ class BattleScreen implements Screen{
         float leftLimit,rightLimit,upLimit, downLimit;
 
         leftLimit = -mainCharacter.boundingBox.x;
-
-            //change the down limit for the platform
         downLimit = - mainCharacter.boundingBox.y;
-
         rightLimit = WORLD_WIDTH - mainCharacter.boundingBox.x - mainCharacter.boundingBox.width;
         upLimit = WORLD_HEIGHT - mainCharacter.boundingBox.y - mainCharacter.boundingBox.height;
 
-        // keyboard input
-
+        // movement of the player
         if (Gdx.input.isKeyPressed(Input.Keys.D) && rightLimit > 0) {
 
             mainCharacter.translate(Math.min(mainCharacter.movementSpeed * delta, rightLimit), 0f);
@@ -159,43 +243,30 @@ class BattleScreen implements Screen{
             mainCharacter.translate(0f, Math.max(-mainCharacter.movementSpeed * delta, downLimit));
 
         }
-        //maybe the shield mechanic if possible
 
-        //mouse and touchpad input
 
-    }
-    public void renderBullet(float delta) {
+        //movement of the second player, aka the chaser
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && rightLimit > 0) {
 
-        // when i already understand the input from keyboard, change to if input then fire
-        // temporary input using the Q button
-        if (mainCharacter.canFire() && Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            Bullet bullet = mainCharacter.fireBullet();
-            playerBulletLists.add(bullet);
+            enemy.translate(Math.min(enemy.movementSpeed * delta, rightLimit), 0f);
         }
 
-        ListIterator<Bullet> iterator = playerBulletLists.listIterator();
-        while(iterator.hasNext()){
-            Bullet bullet = iterator.next();
-            bullet.draw(batch);
-            bullet.boundingBox.x += bullet.movementSpeed * delta;
-            if(bullet.boundingBox.x >= WORLD_WIDTH){
-                iterator.remove();
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) && upLimit > 0) {
+
+            enemy.translate(0f, Math.min(enemy.movementSpeed * delta, upLimit));
+
         }
 
-        if (enemy.canFire()) {
-            Bullet bullet = enemy.fireBullet();
-            enemyBulletLists.add(bullet);
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && leftLimit < 0) {
+
+            enemy.translate(Math.max(-enemy.movementSpeed * delta, leftLimit),0f);
+
         }
 
-        iterator = enemyBulletLists.listIterator();
-        while(iterator.hasNext()){
-            Bullet bullet = iterator.next();
-            bullet.draw(batch);
-            bullet.boundingBox.x -= bullet.movementSpeed * delta;
-            if(bullet.boundingBox.x < 0){
-                iterator.remove();
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && downLimit < 0) {
+
+            enemy.translate(0f, Math.max(-enemy.movementSpeed * delta, downLimit));
+
         }
 
     }
