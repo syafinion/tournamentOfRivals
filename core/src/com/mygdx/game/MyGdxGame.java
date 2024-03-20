@@ -9,7 +9,8 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create() {
 		// This will work because you're now extending Game, which contains the setScreen method.
-		setScreen(new MainMenuScreen(this));
+		//setScreen(new MainMenuScreen(this));
+		setScreen(new GamePlayScreen(this));// only for testing for a moment
 	}
 
 	@Override

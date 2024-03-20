@@ -6,15 +6,26 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+import java.awt.Rectangle;
+import java.util.LinkedList;
 
 public class GamePlayScreen implements Screen {
     private Game game;
+    Rectangle boundingBox; // this is some kind of hitbox
     private Texture mazeTexture;
     private SpriteBatch batch;
-    private Texture dotTexture;
+    private Texture dotTexture,coinTexture;
+    private Coin coin1, coin2, coin3;
+    private Animation<TextureRegion> coinAnimation;
+    private LinkedList<Coin> coinLinkedList;
     private float dotX, dotY;
+    private  int dotWidth, dotHeight; //for setting the hitbox width and height using the bounding area
+    private int x,y;//coordinates
     private final float DOT_SIZE = 30.0f; // This should be the size of your dot
     private final float MOVE_AMOUNT = 2.0f;
     private boolean[][] collisionMap;
@@ -24,9 +35,36 @@ public class GamePlayScreen implements Screen {
     private final float START_Y = 50f;
     private final float COLLISION_BUFFER_RATIO = 0.1f;
 
+    Rectangle dot = new Rectangle(x,y, dotWidth, dotHeight);//for making the hitbox for the dot but havent made it so leave it as it be
+
+
+
 
     public GamePlayScreen(Game game) {
         this.game = game;
+
+        //coin animation
+        batch = new SpriteBatch();
+        coinTexture = new Texture("Coins.png");
+
+        int frameWidth = coinTexture.getWidth() / 6;
+        int frameHeight = coinTexture.getHeight();
+
+        float frameDuration = 0.1f;
+        TextureRegion[][] frames = TextureRegion.split(coinTexture, frameWidth, frameHeight);
+        TextureRegion[] animationFrames = frames[0];
+        coinAnimation = new Animation<>(frameDuration, animationFrames);
+        coinLinkedList = new LinkedList<>();
+        batch = new SpriteBatch();
+
+        //still very dirty assigning need to improve but it's working
+        coin1 = new Coin(198, 304, 10, 10, frameDuration, null, animationFrames);
+        coin2 = new Coin(97, 78, 10, 10, frameDuration, null, animationFrames);
+        coin3 = new Coin(300, 128, 10, 10, frameDuration, null, animationFrames);
+
+        coinLinkedList.add(coin1);
+        coinLinkedList.add(coin2);
+        coinLinkedList.add(coin3);
     }
 
     @Override
@@ -40,6 +78,7 @@ public class GamePlayScreen implements Screen {
         dotY = START_Y; // Adjust this as well
 
         createCollisionMap();
+
     }
 
     private void createCollisionMap() {
@@ -125,6 +164,8 @@ public class GamePlayScreen implements Screen {
         return collisionMap[x][y];
     }
 
+    private void renderCoin(float delta){ }
+
 
 
 
@@ -141,6 +182,12 @@ public class GamePlayScreen implements Screen {
         batch.begin();
         batch.draw(mazeTexture, 0, 0);
         batch.draw(dotTexture, dotX, dotY, DOT_SIZE, DOT_SIZE); // Draw the dot
+        coin1.render(batch);
+        coin2.render(batch);
+        coin3.render(batch);
+        coin1.update(delta);
+        coin2.update(delta);
+        coin3.update(delta);
         batch.end();
     }
 
