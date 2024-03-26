@@ -69,7 +69,7 @@ public class GamePlayScreen implements Screen {
 
     @Override
     public void show() {
-        mazeTexture = new Texture("gamemap.jpeg");
+        mazeTexture = new Texture("Game Map.jpg");
         dotTexture = new Texture("dot.png"); // Make sure you have a dot.png in your assets
         batch = new SpriteBatch();
 
