@@ -11,11 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-
-
 
 public class MainMenuScreen extends ScreenAdapter {
     private Stage stage;
@@ -26,9 +25,6 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     public void show() {
-
-        //rendering the background
-
         this.stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(this.stage);
 
@@ -59,8 +55,11 @@ public class MainMenuScreen extends ScreenAdapter {
 
         playButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                System.out.println("Play button clicked. Changing screen.");
+                game.setScreen(new GamePlayScreen(game)); // Switch to gameplay screen
             }
         });
+
         settingsButton.addListener(new ChangeListener() {
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
             }
@@ -95,9 +94,6 @@ public class MainMenuScreen extends ScreenAdapter {
     }
 
     public void hide() {
-
         this.stage.dispose();
     }
-
-
 }
