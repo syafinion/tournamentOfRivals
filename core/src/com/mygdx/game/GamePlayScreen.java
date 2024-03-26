@@ -69,7 +69,7 @@ public class GamePlayScreen implements Screen {
 
     @Override
     public void show() {
-        mazeTexture = new Texture("Game Map.jpg");
+        mazeTexture = new Texture("gamemap.jpeg");
         dotTexture = new Texture("dot.png"); // Make sure you have a dot.png in your assets
         batch = new SpriteBatch();
 
@@ -86,6 +86,7 @@ public class GamePlayScreen implements Screen {
             mazeTexture.getTextureData().prepare();
         }
         Pixmap pixmap = mazeTexture.getTextureData().consumePixmap();
+
 
         collisionMap = new boolean[pixmap.getWidth()][pixmap.getHeight()];
         // We will invert the y-axis here
