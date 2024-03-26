@@ -69,7 +69,7 @@ public class GamePlayScreen implements Screen {
 
     @Override
     public void show() {
-        mazeTexture = new Texture("gamemap.jpeg");
+        mazeTexture = new Texture("Game Map.jpg");
         dotTexture = new Texture("dot.png"); // Make sure you have a dot.png in your assets
         batch = new SpriteBatch();
 
@@ -81,25 +81,27 @@ public class GamePlayScreen implements Screen {
 
     }
 
+
     private void createCollisionMap() {
         if (!mazeTexture.getTextureData().isPrepared()) {
             mazeTexture.getTextureData().prepare();
         }
         Pixmap pixmap = mazeTexture.getTextureData().consumePixmap();
 
-
         collisionMap = new boolean[pixmap.getWidth()][pixmap.getHeight()];
-        // We will invert the y-axis here
+        // Iterate through all pixels in the pixmap
         for (int y = 0; y < pixmap.getHeight(); y++) {
             for (int x = 0; x < pixmap.getWidth(); x++) {
                 // LibGDX pixmap coordinates start at the top left, so invert the y-axis
                 int pixel = pixmap.getPixel(x, pixmap.getHeight() - 1 - y);
-                // Check for non-white pixels, which we'll assume to be walls
-                collisionMap[x][y] = (pixel != 0xFFFFFFFF);
+                // Check if the pixel is significantly green. This example uses a simple
+                // threshold check. Adjust the threshold according to your specific color.
+                boolean isGreen = ((pixel & 0x0000FF00) != 0) && ((pixel & 0x00FF0000) == 0) && ((pixel & 0x000000FF) == 0);
+                collisionMap[x][y] = isGreen;
             }
         }
 
-        // For debugging: Print out the collision map to the console
+        // Debugging: Print the collision map
         for (int y = 0; y < pixmap.getHeight(); y++) {
             for (int x = 0; x < pixmap.getWidth(); x++) {
                 System.out.print(collisionMap[x][y] ? "1" : "0");
@@ -107,9 +109,9 @@ public class GamePlayScreen implements Screen {
             System.out.println();
         }
 
-        // Don't forget to dispose of the pixmap once you're done with it
         pixmap.dispose();
     }
+
 
 
     private void handleInput() {
